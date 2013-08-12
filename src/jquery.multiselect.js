@@ -114,6 +114,8 @@
 
 			// bump unique ID
 			multiselectID++;
+			
+			this.collapseOptgroups(this.checkboxContainer.find('li.ui-multiselect-optgroup-label'));
 		},
 
 		_init: function () {
