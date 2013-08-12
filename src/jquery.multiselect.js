@@ -402,9 +402,22 @@
 				.on('click.multiselect', 'input[type="checkbox"], input[type="radio"]', function (e) {
 					if ($(this).is(".ui-multiselect-optgroup-checkbox")) {
 						var $this = $(this),
+						        checked = this.checked
 							$inputs = $this.closest('li.ui-multiselect-optgroup-label').nextUntil('li:not(.ui-multiselect-optgroup-content)').find('input:not(:disabled)'),
 							nodes = $inputs.get(),
 							label = $this.closest('label').text();
+							
+							var optionlist = self.element.find('option');
+							optionlist.each(function () {
+								var thisObj = this;
+								$inputs.each(function () {
+									if (thisObj.value === this.value) {
+										thisObj.selected = checked;
+										this.checked = checked;
+									} 
+								});	
+							
+							});							
 
 						// trigger event and bail if the return is false
 						if (self._trigger('beforeoptgrouptoggle', e, { inputs: nodes, label: label }) === false) {
@@ -558,10 +571,10 @@
 		// The context of this function should be a checkbox; do not proxy it.
 		_toggleState: function (prop, flag) {
 			return function () {
-				if (!this.disabled) {
+			/*	if (!this.disabled) {
 					this[prop] = flag;
 				}
-
+			*/
 				if (flag) {
 					this.setAttribute('aria-selected', true);
 				} else {
@@ -828,6 +841,7 @@
 					$optgroups = $optgroups.add(this.checkboxContainer.find("li.ui-multiselect-optgroup-label span:contains(" + optgroups[i] + ")").closest('li.ui-multiselect-optgroup-label'));
 				}
 			}
+			$optgroups = this.checkboxContainer.find('li.ui-multiselect-optgroup-label');
 			this._toggleOptgroupCollapse(flag, $optgroups);
 		},
 
