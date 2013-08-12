@@ -59,16 +59,49 @@
       // rewrite internal _toggleChecked fn so that when checkAll/uncheckAll is fired,
       // only the currently filtered elements are checked
       instance._toggleChecked = function(flag, group) {
+        
+        var checkAllClicked = false;
+        
+      	if(group == undefined)
+    		{
+    			checkAllClicked = true;
+    		}        
+        
         var $inputs = (group && group.length) ?  group : this.labels.find('input');
         var _self = this;
 
         // do not include hidden elems if the menu isn't open.
-        var selector = instance._isOpen ?  ':disabled, :hidden' : ':disabled';
+        //var selector = instance._isOpen ?  ':disabled, :hidden' : ':disabled';
 
-        $inputs = $inputs
-          .not(selector)
-          .each(this._toggleState('checked', flag));
+        //$inputs = $inputs
+        //  .not(selector)
+        //  .each(this._toggleState('checked', flag));
 
+    	if(checkAllClicked)
+  		{
+  			var optionlist = this.element.find('option');
+  			optionlist.each(function () {
+  				var thisObj = this;
+  				$inputs.each(function () {
+  					if($(this).hasClass("ui-multiselect-optgroup-checkbox"))
+  					{
+  						this.checked = flag;
+  					}
+  					else
+  					{
+  						if (thisObj.value === this.value) 
+  						{
+  							thisObj.selected = flag;
+  							this.checked = flag;
+  						}
+  					} 
+  				});	
+  			
+  			});			
+  			
+  		}
+
+        $inputs = $inputs.each(this._toggleState('checked', flag));
         // update text
         this.update();
 
